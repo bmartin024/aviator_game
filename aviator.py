@@ -159,7 +159,7 @@ try:
 
 except FileNotFoundError:
     egyenleg = megadas("egyenleg", "balance", "50", "1,000,000")
-    
+
     with open("elozmenyek.txt", "a", encoding="utf-8") as fajl:
         fajl.write(f"\nÚj feltöltés: {egyenleg:.2f} Ft\n")
 
@@ -266,12 +266,14 @@ while True:
         if allapot == "korvege":
 
                 if tipp < akt_odds:
+                        profit = tipp*osszeg-osszeg
                         nyertel_e = szoveg.render('You won!', False, 'Black')
-                        egyenleg += tipp*osszeg-osszeg
+                        egyenleg += profit
                         osszeg = 0
                 else:
+                        profit = -osszeg
                         nyertel_e = szoveg.render('You lost!', False, 'Black')
-                        egyenleg -= osszeg
+                        egyenleg += profit
                         osszeg = 0
                 
                 repulo_r.y -= 8
@@ -299,6 +301,7 @@ while True:
                             f"Fogadási összeg: {eredeti_osszeg:.2f} | "
                             f"Tipp: {tipp:.2f}x | "
                             f"Szorzó: {szorzo:.2f}x | "
+                            f"Profit: {profit:+.2f} | "
                             f"Új egyenleg: {egyenleg:.2f}\n"
                         )
 
