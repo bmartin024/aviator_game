@@ -153,10 +153,15 @@ def randomf():
 balszoveg = szoveg.render(f'Bal: 0', False, 'Black')
 balszoveg_r = balszoveg.get_rect(bottomleft = (20, 490))
 
-egyenleg = megadas("egyenleg", "balance", "50", "1,000,000")
+try:
+    with open("egyenleg.txt", "r") as fajl:
+        egyenleg = float(fajl.read())
 
-with open("elozmenyek.txt", "a", encoding="utf-8") as fajl:
-    fajl.write(f"\nÚj feltöltés: {egyenleg:.2f} Ft\n")
+except FileNotFoundError:
+    egyenleg = megadas("egyenleg", "balance", "50", "1,000,000")
+    
+    with open("elozmenyek.txt", "a", encoding="utf-8") as fajl:
+        fajl.write(f"\nÚj feltöltés: {egyenleg:.2f} Ft\n")
 
 allapot = "tipp"
 tipp = 0
@@ -296,13 +301,19 @@ while True:
                             f"Szorzó: {szorzo:.2f}x | "
                             f"Új egyenleg: {egyenleg:.2f}\n"
                         )
+
+                    with open("egyenleg.txt", "w", encoding="utf-8") as fajl:
+                        fajl.write(str(egyenleg))
+
                     eredeti_mentve = True
 
                 if egyenleg < 50:
+                        if os.path.exists("egyenleg.txt"):
+                            os.remove("egyenleg.txt")
                         allapot = "jatekveg"
                 
         if allapot == "jatekveg":
-
+                
                 uj2_r = uj2.get_rect(bottomright = (980, 490))
 
                 screen.blit(hatter,(0,0))
