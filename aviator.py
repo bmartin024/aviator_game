@@ -31,254 +31,91 @@ szoveg2 = pg.font.Font(None, 48)
 hatter = pg.image.load(resource_path('hatter_0.png'))
 hatter_kezdet = 0
 
-def balancef():
 
-        karakterek = ['0','1','2','3','4','5','6','7','8','9','.']
-        balance = ""
+def megadas(x, y, also, felso):
 
-        screen.blit(hatter,(0,0))
+    karakterek = ['0','1','2','3','4','5','6','7','8','9','.']
+    x = ""
 
-        nincshiba = True
+    screen.blit(hatter,(0,0))
 
-        while True:
+    nincshiba = True
 
-                screen.blit(hatter,(0,0))
-                balanceszoveg = szoveg.render(balance, False, 'Black')
-                balanceszoveg_r = balanceszoveg.get_rect(center = (500-len(balance),275))
+    while True:
 
-                screen.blit(balanceszoveg,balanceszoveg_r)
-                
-                kezdoszoveg = szoveg.render('Enter your balance! (50-1,000,000)', False, 'Black')
-                kezdoszoveg_r = kezdoszoveg.get_rect(center = (500,220))
-                screen.blit(kezdoszoveg, kezdoszoveg_r)
+            screen.blit(hatter,(0,0))
+            fvszoveg = szoveg.render(f'{x}', False, 'Black')
+            fvszoveg_r = fvszoveg.get_rect(center = (500-len(x),275))
+            balhatter_r = balszoveg_r.inflate(20,10)
+            pg.draw.rect(screen,'White', balhatter_r)
+            pg.draw.rect(screen,'Black', balhatter_r,2)
+            screen.blit(balszoveg, balszoveg_r)
+            screen.blit(fvszoveg,fvszoveg_r)
+            
+            kezdoszoveg = szoveg.render(f'Enter your {y}! ({also}-{felso})', False, 'Black')
+            kezdoszoveg_r = kezdoszoveg.get_rect(center = (500,220))
+            screen.blit(kezdoszoveg, kezdoszoveg_r)
 
-                if nincshiba:
-                        hibauzenet = szoveg.render('', False, 'Black')
-                        hibauzenet_r = hibauzenet.get_rect(center = (500, 360))
-                        for event in pg.event.get():
-                                if event.type == pg.QUIT:
-                                        pg.quit()
-                                        exit()
+            if nincshiba:
+                    hibauzenet = szoveg.render('', False, 'Black')
+                    hibauzenet_r = hibauzenet.get_rect(center = (500, 360))
+                    for event in pg.event.get():
+                            if event.type == pg.QUIT:
+                                    pg.quit()
+                                    exit()
 
-                                if event.type == pg.KEYDOWN:
-                                        try:
-                                                if chr(event.key) in karakterek:
-                                                        if len(balance) < 9:
-                                                                balance += chr(event.key)
-                                                                balanceszoveg = szoveg.render(balance, False, 'Black')
-                                                                screen.blit(balanceszoveg, balanceszoveg_r)
-                                                        else:
-                                                                balance = balance
-                                        except ValueError:
-                                                balance = balance
-                                                continue
+                            if event.type == pg.KEYDOWN:
+                                    try:
+                                            if chr(event.key) in karakterek:
+                                                    if len(x) < 7:
+                                                            x += chr(event.key)
+                                                            fvszoveg = szoveg.render(f'{x}', False, 'Black')
+                                                            screen.blit(fvszoveg, fvszoveg_r)
+                                                    else:
+                                                            x = x
+                                    except ValueError:
+                                            x = x
+                                            continue
 
-                                        if event.key == pg.K_BACKSPACE:
-                                                balance = balance[:-1]
+                                    if event.key == pg.K_BACKSPACE:
+                                            x = x[:-1]
 
-                                        if event.key == pg.K_RETURN:
-                                                try:
-                                                        balance = float(balance)
-                                                except ValueError:
-                                                        nincshiba = False
-                                                        screen.blit(hibauzenet, hibauzenet_r)
-                                                        balance = ""
-                                                        continue
+                                    if event.key == pg.K_RETURN:
+                                            try:
+                                                    x = float(x)
+                                            except ValueError:
+                                                    nincshiba = False
+                                                    screen.blit(hibauzenet, hibauzenet_r)
+                                                    x = ""
+                                                    continue
 
-                                                if balance < 50 or balance > 1000000:
-                                                        nincshiba = False
-                                                        screen.blit(hibauzenet, hibauzenet_r)
-                                                        balance = ""
-                                                else:
-                                                        return balance
-                                                
-                                        screen.blit(hibauzenet, hibauzenet_r)
-                        
-                else:
-                        hibauzenet = szoveg.render('Invalid balance! (Press Enter)', False, 'Black')
-                        hibauzenet_r = hibauzenet.get_rect(center = (500, 360))
-                        screen.blit(hibauzenet, hibauzenet_r)
-                        screen.blit(balanceszoveg, balanceszoveg_r)
+                                            if x <  float(also.replace(',', '')) or x > float(felso.replace(',', '')):
+                                                    nincshiba = False
+                                                    screen.blit(hibauzenet, hibauzenet_r)
+                                                    x = ""
+                                            else:
+                                                    return x
+                                            
+                                    screen.blit(hibauzenet, hibauzenet_r)
+                    
+            else:
+                    hibauzenet = szoveg.render(f'Invalid {y}! (Press Enter)', False, 'Black')
+                    hibauzenet_r = hibauzenet.get_rect(center = (500, 360))
+                    screen.blit(hibauzenet, hibauzenet_r)
+                    screen.blit(fvszoveg, fvszoveg_r)
 
-                        for event in pg.event.get():
-                                if event.type == pg.QUIT:
-                                        pg.quit()
-                                        exit()
+                    for event in pg.event.get():
+                            if event.type == pg.QUIT:
+                                    pg.quit()
+                                    exit()
 
-                                if event.type == pg.KEYDOWN:
-                                        if event.key == pg.K_RETURN:
-                                                screen.blit(hatter,(0,0))
-                                                nincshiba = True
+                            if event.type == pg.KEYDOWN:
+                                    if event.key == pg.K_RETURN:
+                                            screen.blit(hatter,(0,0))
+                                            nincshiba = True
 
-                pg.display.update()
+            pg.display.update()
 
-def betf():
-
-        karakterek = ['0','1','2','3','4','5','6','7','8','9','.']
-        bet = ""
-
-        screen.blit(hatter,(0,0))
-        nincshiba = True
-
-        while True:
-
-                screen.blit(hatter,(0,0))
-                betszoveg = szoveg.render(bet, False, 'Black')
-                betszoveg_r = betszoveg.get_rect(center = (500-len(bet),275))
-                balhatter_r = balszoveg_r.inflate(20,10)
-                pg.draw.rect(screen,'White', balhatter_r)
-                pg.draw.rect(screen,'Black', balhatter_r,2)
-                screen.blit(balszoveg, balszoveg_r)
-                screen.blit(betszoveg,betszoveg_r)
-                
-                kezdoszoveg = szoveg.render('Enter your bet! (50-1,000,000)', False, 'Black')
-                kezdoszoveg_r = kezdoszoveg.get_rect(center = (500,220))
-                screen.blit(kezdoszoveg, kezdoszoveg_r)
-
-                if nincshiba:
-                        hibauzenet = szoveg.render('', False, 'Black')
-                        hibauzenet_r = hibauzenet.get_rect(center = (500, 360))
-                        for event in pg.event.get():
-                                if event.type == pg.QUIT:
-                                        pg.quit()
-                                        exit()
-
-                                if event.type == pg.KEYDOWN:
-                                        try:
-                                                if chr(event.key) in karakterek:
-                                                        if len(bet) < 9:
-                                                                bet += chr(event.key)
-                                                                betszoveg = szoveg.render(bet, False, 'Black')
-                                                                screen.blit(betszoveg, betszoveg_r)
-                                                        else:
-                                                                bet = bet
-                                        except ValueError:
-                                                bet = bet
-                                                continue
-
-                                        if event.key == pg.K_BACKSPACE:
-                                                bet = bet[:-1]
-
-                                        if event.key == pg.K_RETURN:
-                                                try:
-                                                        bet = float(bet)
-                                                except ValueError:
-                                                        nincshiba = False
-                                                        screen.blit(hibauzenet, hibauzenet_r)
-                                                        bet = ""
-                                                        continue
-
-                                                if bet < 50 or bet > balance:
-                                                        nincshiba = False
-                                                        screen.blit(hibauzenet, hibauzenet_r)
-                                                        bet = ""
-                                                else:
-                                                        return bet
-
-                                        screen.blit(hibauzenet, hibauzenet_r)
-                        
-                else:
-                        hibauzenet = szoveg.render('Invalid bet! (Press Enter)', False, 'Black')
-                        hibauzenet_r = hibauzenet.get_rect(center = (500, 360))
-                        screen.blit(hibauzenet, hibauzenet_r)
-                        screen.blit(betszoveg, betszoveg_r)
-
-                        for event in pg.event.get():
-                                if event.type == pg.QUIT:
-                                        pg.quit()
-                                        exit()
-
-                                if event.type == pg.KEYDOWN:
-                                        if event.key == pg.K_RETURN:
-                                                screen.blit(hatter,(0,0))
-                                                screen.blit(balszoveg, balszoveg_r)
-                                                nincshiba = True
-
-                pg.display.update()
-
-def tippf():
-
-        karakterek = ['0','1','2','3','4','5','6','7','8','9','.']
-        tipp = ""
-
-        screen.blit(hatter,(0,0))
-        nincshiba = True
-
-        while True:
-
-                screen.blit(hatter,(0,0))
-                oddsszoveg = szoveg.render(tipp, False, 'Black')
-                oddsszoveg_r = oddsszoveg.get_rect(center = (500-len(tipp),275))
-                balhatter_r = balszoveg_r.inflate(20,10)
-                pg.draw.rect(screen,'White', balhatter_r)
-                pg.draw.rect(screen,'Black', balhatter_r,2)
-                screen.blit(balszoveg, balszoveg_r)
-                screen.blit(oddsszoveg,oddsszoveg_r)
-                
-                kezdoszoveg = szoveg.render('Enter an odds! (1-100,000)', False, 'Black')
-                kezdoszoveg_r = kezdoszoveg.get_rect(center = (500,220))
-                screen.blit(kezdoszoveg, kezdoszoveg_r)
-
-                if nincshiba:
-                        hibauzenet = szoveg.render('', False, 'Black')
-                        hibauzenet_r = hibauzenet.get_rect(center = (500, 360))
-                        for event in pg.event.get():
-                                if event.type == pg.QUIT:
-                                        pg.quit()
-                                        exit()
-
-                                if event.type == pg.KEYDOWN:
-                                        try:
-                                                if chr(event.key) in karakterek:
-                                                        if len(tipp) < 8:
-                                                                tipp += chr(event.key)
-                                                                oddsszoveg = szoveg.render(tipp, False, 'Black')
-                                                                screen.blit(oddsszoveg, oddsszoveg_r)
-                                                        else:
-                                                                tipp = tipp
-                                        except ValueError:
-                                                tipp = tipp
-                                                continue
-
-                                        if event.key == pg.K_BACKSPACE:
-                                                tipp = tipp[:-1]
-
-                                        if event.key == pg.K_RETURN:
-                                                try:
-                                                        tipp = float(tipp)
-                                                except ValueError:
-                                                        nincshiba = False
-                                                        screen.blit(hibauzenet, hibauzenet_r)
-                                                        tipp = ""
-                                                        continue
-
-                                                if tipp < 0 or tipp > 100000:
-                                                        nincshiba = False
-                                                        screen.blit(hibauzenet, hibauzenet_r)
-                                                        tipp = ""
-                                                else:
-                                                        return tipp
-                                                
-                                        screen.blit(hibauzenet, hibauzenet_r)
-                        
-                else:
-                        hibauzenet = szoveg.render('Invalid odds! (Press Enter)', False, 'Black')
-                        hibauzenet_r = hibauzenet.get_rect(center = (500, 360))
-                        screen.blit(hibauzenet, hibauzenet_r)
-                        screen.blit(oddsszoveg, oddsszoveg_r)
-
-                        for event in pg.event.get():
-                                if event.type == pg.QUIT:
-                                        pg.quit()
-                                        exit()
-
-                                if event.type == pg.KEYDOWN:
-                                        if event.key == pg.K_RETURN:
-                                                screen.blit(hatter,(0,0))
-                                                screen.blit(balszoveg, balszoveg_r)
-                                                nincshiba = True
-
-                pg.display.update()
 
 def randomf():
         random = r.randint(1,1002)
@@ -312,11 +149,15 @@ def randomf():
         else:
                 return r.randint(999900,9999900)
 
-balance = balancef()
+
+balszoveg = szoveg.render(f'Bal: 0', False, 'Black')
+balszoveg_r = balszoveg.get_rect(bottomleft = (20, 490))
+
+egyenleg = megadas("egyenleg", "balance", "50", "1,000,000")
 allapot = "tipp"
 tipp = 0
 
-balszoveg = szoveg.render(f'Bal: {balance:.2f}', False, 'Black')
+balszoveg = szoveg.render(f'Bal: {egyenleg:.2f}', False, 'Black')
 balszoveg_r = balszoveg.get_rect(bottomleft = (20, 490))
 uj = szoveg.render('Next Round', False, "Black")
 uj2 = szoveg.render('Deposit', False, "Black")
@@ -339,10 +180,10 @@ while True:
 
                 if event.type == pg.MOUSEBUTTONDOWN:
                         if uj2_r.collidepoint(event.pos):
-                                balance = balancef()
+                                egyenleg = megadas("egyenleg", "balance", "50", "1,000,000")
                                 allapot = "tipp"
 
-        balszoveg = szoveg.render(f'Bal: {balance:.2f}', False, 'Black')
+        balszoveg = szoveg.render(f'Bal: {egyenleg:.2f}', False, 'Black')
         balszoveg_r = balszoveg.get_rect(bottomleft = (20, 490))
         balhatter_r = balszoveg_r.inflate(20,10)
         pg.draw.rect(screen,'White', balhatter_r)
@@ -354,8 +195,8 @@ while True:
                 uj_r = uj.get_rect(center = (5000, 5000))
                 uj2_r = uj2.get_rect(center = (5000, 5000))
 
-                bet = betf()
-                tipp = tippf()
+                osszeg = megadas("osszeg", "bet amount", "50", f"{egyenleg:.2f}")
+                tipp = megadas("tipp", "guess", "1", "100,000")
                 random2 = randomf()
 
                 gyorsulas = 0.0045
@@ -411,17 +252,17 @@ while True:
 
                 if tipp < akt_odds:
                         nyertel_e = szoveg.render('You won!', False, 'Black')
-                        balance += tipp*bet-bet
-                        bet = 0
+                        egyenleg += tipp*osszeg-osszeg
+                        osszeg = 0
                 else:
                         nyertel_e = szoveg.render('You lost!', False, 'Black')
-                        balance -= bet
-                        bet = 0
+                        egyenleg -= osszeg
+                        osszeg = 0
                 
                 repulo_r.y -= 8
                 
                 tipped = szoveg.render(f'Your guess was {tipp:.2f}x', False, "Black")
-                balszoveg = szoveg.render(f'Bal: {balance:.2f}', False, 'Black')
+                balszoveg = szoveg.render(f'Bal: {egyenleg:.2f}', False, 'Black')
                 vege_szoveg = szoveg.render(f'The game ended at {akt_odds:.2f}x',False,'Black')
 
                 nyertel_e_r = nyertel_e.get_rect(center = (500,470))
@@ -438,7 +279,7 @@ while True:
                 screen.blit(tipped,tipped_r)
                 screen.blit(repulo, repulo_r)
 
-                if balance < 50:
+                if egyenleg < 50:
                         allapot = "jatekveg"
                 
         if allapot == "jatekveg":
@@ -455,7 +296,7 @@ while True:
                 pg.draw.rect(screen,'Black', uj2hatter_r,2)
                 screen.blit(uj2,uj2_r)
 
-        balszoveg = szoveg.render(f'Bal: {balance:.2f}', False, 'Black')
+        balszoveg = szoveg.render(f'Bal: {egyenleg:.2f}', False, 'Black')
         balszoveg_r = balszoveg.get_rect(bottomleft = (20, 490))
         balhatter_r = balszoveg_r.inflate(20,10)
         pg.draw.rect(screen,'White', balhatter_r)
