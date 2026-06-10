@@ -154,6 +154,10 @@ balszoveg = szoveg.render(f'Bal: 0', False, 'Black')
 balszoveg_r = balszoveg.get_rect(bottomleft = (20, 490))
 
 egyenleg = megadas("egyenleg", "balance", "50", "1,000,000")
+
+with open("elozmenyek.txt", "a", encoding="utf-8") as fajl:
+    fajl.write(f"\nÚj feltöltés: {egyenleg:.2f} Ft\n")
+
 allapot = "tipp"
 tipp = 0
 
@@ -181,6 +185,8 @@ while True:
                 if event.type == pg.MOUSEBUTTONDOWN:
                         if uj2_r.collidepoint(event.pos):
                                 egyenleg = megadas("egyenleg", "balance", "50", "1,000,000")
+                                with open("elozmenyek.txt", "a", encoding="utf-8") as fajl:
+                                    fajl.write(f"\nÚj feltöltés: {egyenleg:.2f} Ft\n")
                                 allapot = "tipp"
 
         balszoveg = szoveg.render(f'Bal: {egyenleg:.2f}', False, 'Black')
@@ -199,6 +205,8 @@ while True:
                 tipp = megadas("tipp", "guess", "1", "100,000")
                 random2 = randomf()
 
+                szorzo = random2/100+1
+
                 gyorsulas = 0.0045
                 akt_odds = 1.0
 
@@ -213,7 +221,7 @@ while True:
 
         if allapot == "jatek":
 
-                if akt_odds < random2/100+1:
+                if akt_odds < szorzo:
                         if fel:
                                 repulo_r.y -= 2
                                 if repulo_r.top < 100:
@@ -246,6 +254,8 @@ while True:
                                 gyorsulas = 0.15
 
                 else:
+                        eredeti_osszeg = osszeg
+                        eredeti_mentve = False
                         allapot = "korvege"
 
         if allapot == "korvege":
@@ -278,6 +288,15 @@ while True:
                 screen.blit(uj,uj_r)
                 screen.blit(tipped,tipped_r)
                 screen.blit(repulo, repulo_r)
+                if eredeti_mentve == False:
+                    with open("elozmenyek.txt", "a", encoding="utf-8") as fajl:
+                        fajl.write(
+                            f"Fogadási összeg: {eredeti_osszeg:.2f} | "
+                            f"Tipp: {tipp:.2f}x | "
+                            f"Szorzó: {szorzo:.2f}x | "
+                            f"Új egyenleg: {egyenleg:.2f}\n"
+                        )
+                    eredeti_mentve = True
 
                 if egyenleg < 50:
                         allapot = "jatekveg"
