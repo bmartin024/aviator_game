@@ -2,12 +2,18 @@
 
 This is a simple Aviator-style game written in Python using Pygame.
 
+## Screenshot
+
+![Gameplay screenshot](kepernyokep.png)
+
 ## Features
 
 - Betting system
 - Multiplier randomizer
 - Balance management
+- Game history tracking
 - Animated airplane and background
+- Visual feedback when the target multiplier is reached
 
 ## Technologies
 
